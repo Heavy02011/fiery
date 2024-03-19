@@ -1,7 +1,9 @@
 from typing import Optional
 
 import torch
-from pytorch_lightning.metrics.metric import Metric
+#rbx from pytorch_lightning.metrics.metric import Metric
+from torchmetrics import Metric
+
 #from torchmetrics import Metric
 from pytorch_lightning.metrics.functional.classification import stat_scores_multiple_classes
 from pytorch_lightning.metrics.functional.reduction import reduce
