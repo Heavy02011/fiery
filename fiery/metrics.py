@@ -5,7 +5,7 @@ import torch
 from torchmetrics import Metric
 
 #from torchmetrics import Metric
-from pytorch_lightning.metrics.functional.classification import stat_scores_multiple_classes
+#rbx from pytorch_lightning.metrics.functional.classification import stat_scores_multiple_classes
 from pytorch_lightning.metrics.functional.reduction import reduce
 
 
@@ -32,12 +32,14 @@ class IntersectionOverUnion(Metric):
         self.add_state('support', default=torch.zeros(n_classes), dist_reduce_fx='sum')
 
     def update(self, prediction: torch.Tensor, target: torch.Tensor):
-        tps, fps, _, fns, sups = stat_scores_multiple_classes(prediction, target, self.n_classes)
+        #rbx
+        pass
+        #rbx tps, fps, _, fns, sups = stat_scores_multiple_classes(prediction, target, self.n_classes)
 
-        self.true_positive += tps
-        self.false_positive += fps
-        self.false_negative += fns
-        self.support += sups
+        #rbx self.true_positive += tps
+        #rbx self.false_positive += fps
+        #rbx self.false_negative += fns
+        #rbx self.support += sups
 
     def compute(self):
         scores = torch.zeros(self.n_classes, device=self.true_positive.device, dtype=torch.float32)
