@@ -10,6 +10,12 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 from PIL import Image
 
+#rbx
+import matplotlib
+matplotlib.use('Agg')  # Set the backend to 'Agg'
+import matplotlib.pyplot as plt
+
+
 from fiery.trainer import TrainingModule
 from fiery.utils.network import NormalizeInverse
 from fiery.utils.instance import predict_instance_segmentation_and_trajectories
@@ -34,8 +40,11 @@ def plot_prediction(image, output, cfg):
         path = matched_centers[instance_id]
         for t in range(len(path) - 1):
             color = instance_colours[instance_id].tolist()
-            cv2.line(trajectory_img, tuple(path[t]), tuple(path[t + 1]),
-                     color, 4)
+            #cv2.line(trajectory_img, tuple(path[t]), tuple(path[t + 1]), color, 4)
+            
+            #rbx
+            cv2.line(trajectory_img, tuple(map(int, path[t])), tuple(map(int, path[t + 1])), color, 4)
+
 
     # Overlay arrows
     temp_img = cv2.addWeighted(vis_image, 0.7, trajectory_img, 0.3, 1.0)
@@ -111,9 +120,36 @@ def visualise(checkpoint_path):
     for data_path in sorted(glob(os.path.join(EXAMPLE_DATA_PATH, '*.npz'))):
         data = np.load(data_path)
         image = torch.from_numpy(data['image']).to(device)
+        
+        #rbx
         intrinsics = torch.from_numpy(data['intrinsics']).to(device)
         extrinsics = torch.from_numpy(data['extrinsics']).to(device)
         future_egomotions = torch.from_numpy(data['future_egomotion']).to(device)
+        
+        # rbx: print data_path and all read data
+        print(f'Loaded data from {data_path}')
+        print(f'Image shape: {image.shape}')
+        print(f'Intrinsics shape: {intrinsics.shape}')
+        print(f'Extrinsics shape: {extrinsics.shape}')
+        print(f'Future egomotion shape: {future_egomotions.shape}')
+        # print content of data
+        print(data.files)
+        # print all data
+        for key in data.files:
+            print(key, data[key].shape)
+
+        """
+        Loaded data from example_data/example_1.npz
+        Image shape: torch.Size([1, 3, 6, 3, 224, 480])
+        Intrinsics shape: torch.Size([1, 3, 6, 3, 3])
+        Extrinsics shape: torch.Size([1, 3, 6, 4, 4])
+        Future egomotion shape: torch.Size([1, 3, 6])
+        ['image', 'intrinsics', 'extrinsics', 'future_egomotion']
+        image (1, 3, 6, 3, 224, 480)
+        intrinsics (1, 3, 6, 3, 3)
+        extrinsics (1, 3, 6, 4, 4)
+        future_egomotion (1, 3, 6)
+        """
 
         # Forward pass
         with torch.no_grad():
