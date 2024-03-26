@@ -115,10 +115,14 @@ def visualise(checkpoint_path):
     trainer.eval()
 
     # Download example data
-    download_example_data()
+    #rbx download_example_data()
     # Load data
     for data_path in sorted(glob(os.path.join(EXAMPLE_DATA_PATH, '*.npz'))):
-        data = np.load(data_path)
+        # print data_path
+
+        print(data_path)    
+
+        data = np.load(data_path) #rbx allow Pickle
         image = torch.from_numpy(data['image']).to(device)
         
         #rbx
@@ -130,7 +134,7 @@ def visualise(checkpoint_path):
         print(f'Loaded data from {data_path}')
         print(f'Image shape: {image.shape}')
         print(f'Intrinsics shape: {intrinsics.shape}')
-        print(f'Extrinsics shape: {extrinsics.shape}')
+        print(f'Extrinsics shape: {extrinsics.shape}')  
         print(f'Future egomotion shape: {future_egomotions.shape}')
         # print content of data
         print(data.files)
